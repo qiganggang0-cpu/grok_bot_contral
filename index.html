@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Harry 跨境电商工作台</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --bg-soft: #171a21;
+      --card: #ffffff;
+      --card-border: #e8e8ea;
+      --text: #f5f6f8;
+      --muted: #a8b0bd;
+      --accent: #f0c14b;
+      --hero-from: #c62828;
+      --hero-to: #ef6c00;
+      --chip: #232833;
+      --shadow: 0 8px 24px rgba(0,0,0,.28);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 28px;
+      background: rgba(15,17,21,.92);
+      border-bottom: 1px solid #222733;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .brand small {
+      display: block;
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .nav button, .nav a.btn {
+      border: 1px solid #2c3340;
+      background: var(--chip);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .nav button.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+    .hero {
+      border-radius: 22px;
+      padding: 36px 32px;
+      background: linear-gradient(120deg, var(--hero-from), var(--hero-to));
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.15;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 52ch;
+      opacity: .95;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .section {
+      margin-top: 34px;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .section-head span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--card);
+      color: #1b1f27;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px 16px 16px;
+      min-height: 128px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.12);
+      transition: transform .15s ease, box-shadow .15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,.18);
+    }
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      background: #f4f5f7;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    .card p {
+      margin: 0;
+      color: #5b6472;
+      font-size: 13px;
+      line-height: 1.45;
+      flex: 1;
+    }
+    .badge {
+      align-self: flex-start;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3949ab;
+      font-weight: 600;
+    }
+    .badge.warn { background: #fff4e5; color: #b26a00; }
+    .badge.ok { background: #e8f7ee; color: #1b7a3d; }
+    .footer {
+      margin-top: 48px;
+      padding-top: 18px;
+      border-top: 1px solid #222733;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .editor {
+      margin-top: 28px;
+      background: var(--bg-soft);
+      border: 1px solid #2a3140;
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .editor summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .editor textarea {
+      width: 100%;
+      min-height: 220px;
+      margin-top: 12px;
+      border-radius: 12px;
+      border: 1px solid #333b4d;
+      background: #0c0e13;
+      color: #dfe6f1;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .editor .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .editor button {
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .editor .primary {
+      background: var(--accent);
+      color: #1b1400;
+    }
+    .editor .ghost {
+      background: var(--chip);
+      color: var(--text);
+      border: 1px solid #2c3340;
+    }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: #1f2430;
+      border: 1px solid #3a4356;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 50;
+    }
+    .toast.show { opacity: 1; }
+    @media (max-width: 640px) {
+      .topbar { padding: 12px 14px; }
+      .hero { padding: 26px 18px; }
+      .wrap { padding: 16px 14px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">工</div>
+      <div>
+        跨境电商工作台
+        <small>按业务分区 · 本地可改 · 可持续扩展</small>
+      </div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>跨境生意，从这一页开始</h1>
+      <p>店铺、物流、发票、邮箱、listing 都收在这里。点击卡片打开对应助手；也可以在下方编辑数据，自己加分区和工具。</p>
+    </section>
+
+    <div id="sections"></div>
+
+    <details class="editor">
+      <summary>编辑工作台内容（高级）</summary>
+      <p style="color:var(--muted);font-size:13px;margin:10px 0 0;">修改下面的 JSON 后点「保存到本机」。内容存在浏览器本地，刷新不会丢。也可以点「导出」备份文件。</p>
+      <textarea id="jsonEditor" spellcheck="false"></textarea>
+      <div class="row">
+        <button class="primary" id="saveBtn" type="button">保存到本机</button>
+        <button class="ghost" id="resetBtn" type="button">恢复默认</button>
+        <button class="ghost" id="exportBtn" type="button">导出 JSON</button>
+        <button class="ghost" id="importBtn" type="button">导入 JSON</button>
+        <input id="importFile" type="file" accept="application/json,.json" hidden />
+      </div>
+    </details>
+
+    <div class="footer">
+      <span>Harry · 跨境电商工作台</span>
+      <span id="updatedAt"></span>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "harry-workbench-v1";
+
+    const defaultData = {
+      updatedAt: "2026-10-30 18:40 Asia/Shanghai",
+      nav: [
+        { id: "all", label: "全部" },
+        { id: "ai", label: "智能 AI" },
+        { id: "shop", label: "店铺运营" },
+        { id: "fulfill", label: "履约财务" },
+        { id: "tools", label: "效率工具" },
+        { id: "connect", label: "连接状态" }
+      ],
+      sections: [
+        {
+          id: "ai",
+          title: "智能 AI",
+          subtitle: "总控与能力入口",
+          cards: [
+            { icon: "🤖", title: "工作台总控", desc: "一句话分派任务、跨助手汇总与定时汇报", href: "", badge: "推荐", badgeTone: "ok" },
+            { icon: "📊", title: "每日经营汇总", desc: "邮件、物流、店铺待办合成一份简报", href: "", badge: "可自动化" },
+            { icon: "🧩", title: "多任务并行", desc: "同时推进 listing、查件、改价等多条线", href: "" }
+          ]
+        },
+        {
+          id: "shop",
+          title: "店铺运营",
+          subtitle: "销售与商品",
+          cards: [
+            { icon: "🛒", title: "速卖通运营", desc: "订单、活动、店铺数据与日常运营", href: "grokbot://app/v1/agent?id=236a54a6-b99f-47b7-a39b-4e1b9b4514cc" },
+            { icon: "🇪🇺", title: "PCC 运营", desc: "PcComponentes / Mirakl：订单、库存、价格、上架", href: "grokbot://app/v1/agent?id=e015ad0a-6719-45de-a132-5cb9f8b68a1a" },
+            { icon: "✍️", title: "Listing 高手", desc: "标题、五点描述、属性与文案优化", href: "grokbot://app/v1/agent?id=92bdf4c3-5b64-47b6-b02a-ccff8480088e" }
+          ]
+        },
+        {
+          id: "fulfill",
+          title: "履约与财务",
+          subtitle: "物流 · 发票 · 邮件",
+          cards: [
+            { icon: "📦", title: "物流追踪", desc: "查单、异常、时效与在途包裹", href: "grokbot://app/v1/agent?id=756f393d-43a1-4460-8e83-0de709bf42aa" },
+            { icon: "🧾", title: "发票助手", desc: "开票、核对、归档与导出", href: "grokbot://app/v1/agent?id=bfa38cea-b887-444c-9947-644873fb5a87" },
+            { icon: "✉️", title: "邮箱助手", desc: "读写邮件、草稿、买家售后跟进", href: "grokbot://app/v1/agent?id=cc2b4847-854f-471d-8602-2ba1c22fa1c5" }
+          ]
+        },
+        {
+          id: "tools",
+          title: "文档 · 效率 · 协同",
+          subtitle: "表格与飞书",
+          cards: [
+            { icon: "📑", title: "表格制作", desc: "Excel 合并、清洗、报表与数据整理", href: "grokbot://app/v1/agent?id=3f22c393-14f0-4cb1-b90f-e755a768a949" },
+            { icon: "🐦", title: "飞书协作", desc: "飞书消息、文档与团队通知", href: "grokbot://app/v1/agent?id=78c43656-74e7-4b12-b0b2-f7f911d2b7bf" },
+            { icon: "🗂️", title: "工作备忘", desc: "把常用链接、SOP、话术收进这里（可自行添加）", href: "" }
+          ]
+        },
+        {
+          id: "connect",
+          title: "连接状态",
+          subtitle: "已接入的工具",
+          cards: [
+            { icon: "📧", title: "Gmail", desc: "default · ebikes@hillmiles.com", href: "", badge: "已连接", badgeTone: "ok" },
+            { icon: "💬", title: "钉钉", desc: "dingtalk-mcp", href: "", badge: "已连接", badgeTone: "ok" },
+            { icon: "🪶", title: "飞书 / Lark", desc: "lark 已通 · Feishu 插件待授权", href: "", badge: "部分就绪", badgeTone: "warn" },
+            { icon: "🔧", title: "Origin", desc: "代码与项目", href: "", badge: "已连接", badgeTone: "ok" },
+            { icon: "🐙", title: "GitHub", desc: "需要重新授权", href: "", badge: "待授权", badgeTone: "warn" },
+            { icon: "💰", title: "Finance", desc: "需要重新授权", href: "", badge: "待授权", badgeTone: "warn" }
+          ]
+        }
+      ]
+    };
+
+    let activeTab = "all";
+    let data = loadData();
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultData);
+        return JSON.parse(raw);
+      } catch {
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveData(next) {
+      data = next;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      render();
+      toast("已保存到本机浏览器");
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 1800);
+    }
+
+    function renderNav() {
+      const nav = document.getElementById("nav");
+      nav.innerHTML = "";
+      data.nav.forEach((item) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = item.label;
+        btn.className = activeTab === item.id ? "active" : "";
+        btn.addEventListener("click", () => {
+          activeTab = item.id;
+          render();
+        });
+        nav.appendChild(btn);
+      });
+    }
+
+    function renderSections() {
+      const root = document.getElementById("sections");
+      root.innerHTML = "";
+      const sections = data.sections.filter((s) => activeTab === "all" || s.id === activeTab);
+      sections.forEach((section) => {
+        const wrap = document.createElement("section");
+        wrap.className = "section";
+        wrap.id = section.id;
+        wrap.innerHTML = `
+          <div class="section-head">
+            <h2>${escapeHtml(section.title)}</h2>
+            <span>${escapeHtml(section.subtitle || "")}</span>
+          </div>
+          <div class="grid"></div>
+        `;
+        const grid = wrap.querySelector(".grid");
+        (section.cards || []).forEach((card) => {
+          const el = document.createElement(card.href ? "a" : "div");
+          el.className = "card";
+          if (card.href) el.href = card.href;
+          el.innerHTML = `
+            <div class="icon">${card.icon || "⭐"}</div>
+            <h3>${escapeHtml(card.title || "")}</h3>
+            <p>${escapeHtml(card.desc || "")}</p>
+            ${card.badge ? `<span class="badge ${card.badgeTone === "warn" ? "warn" : card.badgeTone === "ok" ? "ok" : ""}">${escapeHtml(card.badge)}</span>` : ""}
+          `;
+          grid.appendChild(el);
+        });
+        root.appendChild(wrap);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function renderEditor() {
+      document.getElementById("jsonEditor").value = JSON.stringify(data, null, 2);
+      document.getElementById("updatedAt").textContent = `内容更新：${data.updatedAt || "-"}`;
+    }
+
+    function render() {
+      renderNav();
+      renderSections();
+      renderEditor();
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      try {
+        const next = JSON.parse(document.getElementById("jsonEditor").value);
+        next.updatedAt = new Date().toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" }) + " Asia/Shanghai";
+        saveData(next);
+      } catch (e) {
+        toast("JSON 格式有误，请检查后再保存");
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      data = structuredClone(defaultData);
+      activeTab = "all";
+      render();
+      toast("已恢复默认内容");
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "harry-workbench.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importBtn").addEventListener("click", () => {
+      document.getElementById("importFile").click();
+    });
+
+    document.getElementById("importFile").addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const next = JSON.parse(text);
+        next.updatedAt = new Date().toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" }) + " Asia/Shanghai";
+        saveData(next);
+      } catch {
+        toast("导入失败，请确认是合法 JSON");
+      } finally {
+        e.target.value = "";
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
